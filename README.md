@@ -5,3 +5,4 @@ You'll want a version of ffmpeg with cuda compiled with it like:
 https://www.gyan.dev/ffmpeg/builds
 
 (trust ffmpeg takes a while to compile)
+A Linux version of upconvert.bat will be made soon.
