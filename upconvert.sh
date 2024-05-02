@@ -1,25 +1,48 @@
-#!/bin/bash
-# Exit on error
-set -e
+#!/usr/bin/env bash
+args="$@"
+is_nvidia=false
+is_amd=false
 
-# Check if ffmpeg is installed
-if ! command -v ffmpeg &> /dev/null
-then
-    echo "ffmpeg could not be found"
-    exit
+if which nvidia-smi &> /dev/null; then
+    is_nvidia=true
+else
+    is_amd=true
 fi
 
-# Loop over all input arguments
-for source in "$@"
-do
-    # Get the base name of the source file
+for source in "$@"; do
     base=$(basename "$source")
-    target="${base} upgraded.mp4"
-    quality="${base} quality.mp4"
+    target="${base}-upgraded.mp4"
 
-    # Convert the source file to hevc format and scale it
-    ffmpeg -i "$source" -c:v hevc_nvenc -qp 17 -vf scale=1920x1080:flags=lanczos "$target"
+    echo $is_nvidia $is_amd
 
-    # Create a quality version of the source file
-    ffmpeg -i "$source" -i "$target" -c:v hevc_nvenc -qp 17 -filter_complex "[0]pad=iw:1080:0:(1080-ih)/2,hstack" "$quality"
+    if [ $is_amd ]; then
+        docker run --rm -it \
+            --device=/dev/dri:/dev/dri \
+            -v $(pwd):/config \
+            linuxserver/ffmpeg \
+            -vaapi_device /dev/dri/renderD128 \
+            -i "/config/$base" \
+            -c:v hevc_vaapi \
+            -b:v 8M \
+            -vtag hvc1 \
+            -vf "format=nv12,hwupload,scale_vaapi=w=1920:h=1080" \
+            -crf 20 \
+            -preset fast \
+            -c:a copy \
+            "/config/$target"
+    elif [ $is_nvidia ]; then
+        docker run --rm -it \
+            --runtime=nvidia \
+            -v $(pwd):/config \
+            linuxserver/ffmpeg \
+            -hwaccel nvdec \
+            -i "/config/$base" \
+            -c:v h264_nvenc \
+            -b:v 8M \
+            -vtag hvc1 \
+            -vf scale=1920:1080 \
+            -preset fast \
+            -c:a copy \
+            "/config/$target"
+    fi
 done
