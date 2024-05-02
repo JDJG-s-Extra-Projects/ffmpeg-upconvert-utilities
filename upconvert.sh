@@ -13,8 +13,9 @@ fi
 
 for source in "$@"; do
     base="$(basename $source)"
-    target="${base}-upgraded.mp4"
-    quality="${base}-quality.mp4"
+    filename="${base%.*}"
+    target="${filename}-upgraded.mp4"
+    quality="${filename}-quality.mp4"
 
     if [ "$is_nvidia" = true ]; then
         docker run --rm -it \
