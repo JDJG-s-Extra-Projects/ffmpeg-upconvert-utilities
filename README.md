@@ -2,7 +2,14 @@
 Has programs that upconvert stuff with ffmpeg
 
 You'll want a version of ffmpeg with cuda compiled with it like:
+
 https://www.gyan.dev/ffmpeg/builds
+
+I use the full ffmpeg-release-full.7z of the lastest version but it seems
+
+ffmpeg-release-full-shared.7z may also work on paper.
+
+
 
 (trust ffmpeg takes a while to compile)
 
