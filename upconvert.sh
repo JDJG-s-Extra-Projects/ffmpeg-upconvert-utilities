@@ -32,7 +32,7 @@ for source in "$@"; do
             --runtime=nvidia \
             -v $(pwd):/config \
             linuxserver/ffmpeg \
-            -i "/config/$source" \
+            -i "/config/$base" \
             -i "/config/$target" \
             -c:v hevc_nvenc \
             -qp 17 \
