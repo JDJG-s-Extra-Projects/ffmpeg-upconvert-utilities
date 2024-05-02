@@ -4,14 +4,14 @@
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "workspaceFolder": "/workspace",
     "postCreateCommand": "apt update && apt upgrade -y",
-    "features": {
-        "ghcr.io/devcontainers/features/git": {}
-    },
     "customizations": {
         "vscode": {
             "extensions": [
                 "ms-azuretools.vscode-docker"
             ]
         }
-    }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/git": {}
+    },
 }
