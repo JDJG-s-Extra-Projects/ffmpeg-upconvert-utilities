@@ -13,10 +13,11 @@ WORKDIR /workspace/nv-codec-headers
 RUN ["make", "install"]
 
 FROM ffnvcodec-install AS ffmpeg
+WORKDIR /workspace
 RUN git clone https://git.ffmpeg.org/ffmpeg.git ffmpeg/
-WORKDIR /workspace/ffmpeg
 
 FROM ffmpeg AS ffmpeg-configure
+WORKDIR /workspace/ffmpeg
 RUN ./configure --enable-nonfree --enable-cuda-nvcc --enable-libnpp --extra-cflags=-I/usr/local/cuda/include --extra-ldflags=-L/usr/local/cuda/lib64 --disable-static --enable-shared
 
 FROM ffmpeg-configure AS ffmpeg-compile

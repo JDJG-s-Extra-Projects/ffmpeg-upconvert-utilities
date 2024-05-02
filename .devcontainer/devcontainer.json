@@ -1,9 +1,9 @@
 {
     "name": "FFMPEG Upconvert Utilities",
     "image": "mcr.microsoft.com/vscode/devcontainers/python:3.12-bookworm-slim",
-    "dockerFile": "Dockerfile",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
     "workspaceFolder": "/workspace",
+    "postCreateCommand": "apt update && apt upgrade -y",
     "features": {
         "ghcr.io/devcontainers/features/git": {}
     },
