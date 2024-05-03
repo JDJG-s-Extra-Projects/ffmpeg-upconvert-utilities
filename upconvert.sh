@@ -6,7 +6,7 @@ VOLUME="$PWD:$DIRECTORY"
 is_nvidia=false
 is_amd=false
 
-if which nvidia-smi &> /dev/null; then
+if which nvidia-smi &>/dev/null; then
     echo "NVIDIA driver detected, using runtime and encoders..."
     is_nvidia=true
 else
@@ -46,7 +46,7 @@ hevc_upscale() {
     fi
 }
 
-comparison_render() {
+render_comparison() {
     source_file="$(basename $1)"
     source_file_without_extension="${source_file%.*}"
 
@@ -58,8 +58,6 @@ comparison_render() {
     output_file="$(basename $3)"
     output_file_without_extension="${output_file%.*}"
     output="$DIRECTORY/$output_file_without_extension.mp4"
-
-    echo $input_flags
 
     if [ "$is_nvidia" = true ]; then
         docker run --rm -it \
@@ -81,12 +79,12 @@ comparison_render() {
     fi
 }
 
-for source in $ARGUMENTS; do
-    base="$(basename $source)"
-    filename="${base%.*}"
-    upscaled="${filename}-upscaled.mp4"
-    final="${filename}-final.mp4"
+for source_file in $ARGUMENTS; do
+    source_filename="$(basename $source_file)"
+    source_filename_without_extension="${source_filename%.*}"
+    upscaled_filname="${source_filename_without_extension}-upscaled.mp4"
+    final_filename="${source_filename_without_extension}-comparison.mp4"
 
-    hevc_upscale $source $upscaled
-    comparison_render $source $upscaled $final
+    hevc_upscale $source_filename $upscaled_filname
+    render_comparison $source_file $upscaled_filname $final_filename
 done
