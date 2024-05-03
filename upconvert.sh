@@ -50,12 +50,13 @@ hevc_upscale() {
 comparison_render() {
     source_file="$(basename $1)"
     source_file_without_extension="${source_file%.*}"
+
     comparison_file="$(basename $2)"
     comparison_file_without_extension="${comparison_file%.*}"
+
     input_flags="-i $DIRECTORY/$source_file -i $DIRECTORY/$comparison_file"
 
-    last_argument="${!#}"
-    output_file="$(basename $last_argument)"
+    output_file="$(basename $3)"
     output_file_without_extension="${output_file%.*}"
     output="$DIRECTORY/$output_file_without_extension.mp4"
 
