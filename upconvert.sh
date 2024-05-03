@@ -64,6 +64,7 @@ render_comparison() {
             --runtime=nvidia \
             -v $VOLUME \
             linuxserver/ffmpeg \
+            -hwaccel nvdec \
             $input_flags \
             -filter_complex "[0]pad=iw:1080:0:(1080-ih)/2,hstack" \
             $output
