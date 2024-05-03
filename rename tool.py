@@ -1,11 +1,10 @@
 import pathlib
-import os
 import datetime
 
-# Get the path to the current directory
-current_directory = pathlib.Path.cwd()
+# Get the path to the current location of where the script is stored
+current_directory = pathlib.Path(__file__).absolute().parent
 files = list(current_directory.rglob("*.mp4"))
-files.sort(key=lambda x: os.path.getmtime(x))
+files.sort(key=lambda path: path.stat().st_mtime)
 
 count = 0
 num = int(input("enter the video number:"))
@@ -17,6 +16,7 @@ for file in files:
         if file.suffix == ".mp4":
             stat = file.stat()
             ok = datetime.datetime.fromtimestamp(stat.st_mtime).strftime("%c")
+            # ok not used
 
             file.rename(f"video-{num}.mp4")
             print(f"renamed file to video-{num}.mp4")
