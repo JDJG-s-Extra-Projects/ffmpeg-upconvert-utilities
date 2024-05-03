@@ -16,7 +16,6 @@ fi
 
 hevc_upscale() {
     input_file="$(basename $1)"
-    input_file_without_extension="${input_file%.*}"
     input="$DIRECTORY/$input_file"
 
     output_file="$(basename $2)"
