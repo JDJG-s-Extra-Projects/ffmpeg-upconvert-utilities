@@ -68,8 +68,6 @@ comparison_render() {
             -v $VOLUME \
             linuxserver/ffmpeg \
             $input_flags \
-            -c:v hevc_nvenc \
-            -qp 17 \
             -filter_complex "[0]pad=iw:1080:0:(1080-ih)/2,hstack" \
             $output
     elif [ "$is_amd" = true ]; then
