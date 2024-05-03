@@ -41,7 +41,7 @@ hevc_upscale() {
             -i $input \
             -c:v hevc_vaapi \
             -qp 17 \
-            -vf "format=nv12,hwupload,scale_vaapi=w=1920:h=1080" \
+            -vf "scale=iw*2:ih*2:flags=lanczos,format=nv12,hwupload,scale_vaapi=w=1920:h=1080" \
             $output
     fi
 }
@@ -70,7 +70,14 @@ comparison_render() {
             -filter_complex "[0]pad=iw:1080:0:(1080-ih)/2,hstack" \
             $output
     elif [ "$is_amd" = true ]; then
-        echo "Comparison rendering is unsupported for AMD"
+        docker run --rm -it \
+            --device=/dev/dri:/dev/dri \
+            -v $VOLUME \
+            linuxserver/ffmpeg \
+            -vaapi_device /dev/dri/renderD128 \
+            $input_flags \
+            -filter_complex "pad=iw:1080:0:(1080-ih)/2,hstack" \
+            $output
     fi
 }
 
