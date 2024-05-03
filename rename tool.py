@@ -1,5 +1,5 @@
-import pathlib
 import datetime
+import pathlib
 
 # Get the path to the current location of where the script is stored
 current_directory = pathlib.Path(__file__).absolute().parent

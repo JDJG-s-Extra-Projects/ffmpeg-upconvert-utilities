@@ -1,7 +1,6 @@
 import asyncio
-import pathlib
 import datetime
-
+import pathlib
 
 # Get the path to the current directory
 current_directory = pathlib.Path(__file__).absolute().parent
@@ -24,34 +23,33 @@ async def ffmpeg_shengians():
                 base_file = file.with_stem(f"{file.stem} upgraded")
                 quality_file = file.with_stem(f"{file.stem} quality")
 
-
                 proc = await asyncio.create_subprocess_exec(
-                        "ffmpeg",
-                        "-i",
-                        source_file,
-                        "-c:v",
-                        "hevc_nvenc",
-                        "-qp",
-                        "17",
-                        "-vf",
-                        "scale=1920x1080:flags=lanczos",
-                        base_file,
+                    "ffmpeg",
+                    "-i",
+                    source_file,
+                    "-c:v",
+                    "hevc_nvenc",
+                    "-qp",
+                    "17",
+                    "-vf",
+                    "scale=1920x1080:flags=lanczos",
+                    base_file,
                 )
                 await proc.wait()
 
                 proc = await asyncio.create_subprocess_exec(
-                        "ffmpeg",
-                        "-i",
-                        source_file,
-                        "-i",
-                        base_file,
-                        "-c:v",
-                        "hevc_nvenc",
-                        "-qp",
-                        "17",
-                        "-filter_complex",
-                        "[0]pad=iw:1080:0:(1080-ih)/2,hstack",
-                        quality_file,
+                    "ffmpeg",
+                    "-i",
+                    source_file,
+                    "-i",
+                    base_file,
+                    "-c:v",
+                    "hevc_nvenc",
+                    "-qp",
+                    "17",
+                    "-filter_complex",
+                    "[0]pad=iw:1080:0:(1080-ih)/2,hstack",
+                    quality_file,
                 )
 
                 await proc.wait()
