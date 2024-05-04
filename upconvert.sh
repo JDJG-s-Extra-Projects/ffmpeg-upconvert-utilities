@@ -27,7 +27,6 @@ hevc_upscale() {
             --runtime=nvidia \
             -v $VOLUME \
             linuxserver/ffmpeg \
-            -hwaccel nvdec \
             -i $input \
             -c:v hevc_nvenc \
             -qp 17 \
