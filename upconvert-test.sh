@@ -27,7 +27,6 @@ hevc_upscale() {
             --runtime=nvidia \
             -v $VOLUME \
             linuxserver/ffmpeg \
-            -hwaccel nvdec \
             -i $input \
             -c:v hevc_nvenc \
             -qp 17 \
@@ -65,7 +64,8 @@ render_comparison() {
             --runtime=nvidia \
             -v $VOLUME \
             linuxserver/ffmpeg \
-            -hwaccel nvdec \
+            -c:v \
+            hevc_nvenc \
             $input_flags \
             -filter_complex "[0]pad=iw:1080:0:(1080-ih)/2,hstack" \
             $output
