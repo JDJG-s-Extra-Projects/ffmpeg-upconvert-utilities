@@ -60,3 +60,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# does not 100% seem to work as wanted though.
