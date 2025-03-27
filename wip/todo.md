@@ -1,10 +1,18 @@
 Todo
 
+# Concat Screenshots
+
+- Needs to respect screenshot order
+
+- Waits 5 seconds for stuff
+
+- ask for in between
+
 # Concat Videos
 
 - Needs to respect video order
 
-- Create screenshot variation (with 5 seconds in between maybe input could handle it)
+- Needs to also respect possible in between transitions that people may want (i.e. per).
 
 # shorts marker (batch file)
 
@@ -12,7 +20,7 @@ Todo
 
 # Test shorts (batch file)
 
-- Final output is way smaller than it ought to be.
+- Final output is way smaller than it ought to be (i.e. video within the black space as the actual video is small).
 
 # upconvert test (bash file)
 
