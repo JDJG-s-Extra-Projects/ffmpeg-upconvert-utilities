@@ -1,4 +1,5 @@
 import os
+import sys
 import asyncio
 import pathlib
 
@@ -15,6 +16,9 @@ async def create_video():
 
     # Find all JPG files in the input folder
     image_files = list(input_folder.rglob("*.jpg"))
+
+    if not image_files:
+        sys.exit("Hey make sure to move your files to the Output folder or it will error out. You can even decide to modify the Output directory to the current one if you want.")
 
     # Sort image files by creation time using pathlib
     image_files.sort(key=lambda x: x.stat().st_ctime)
