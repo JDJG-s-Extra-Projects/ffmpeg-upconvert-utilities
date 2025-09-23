@@ -3,51 +3,56 @@ import asyncio
 import pathlib
 
 async def create_video():
-    # Determine the current directory
+    # Base directory where the script is located
     current_directory = pathlib.Path(__file__).absolute().parent
 
-    # Input and output folders are now relative to the current directory
-    input_folder = current_directory / "Output"
-    output_folder = current_directory / "Videos"
+    # Input folder with screenshots
+    input_folder = current_directory / "screenshots"
 
-    # Create the output folder if it doesn't exist
-    output_folder.mkdir(parents=True, exist_ok=True)
+    # Output folder
+    output_folder = current_directory
+    if not input_folder.exists():
+        print("screenshots/ folder does not exist.")
+        return
 
-    # Find all JPG files in the input folder
-    image_files = list(input_folder.rglob("*.jpg"))
+    # Find all JPG files in the screenshots folder
+    image_files = list(input_folder.glob("*.jpg"))
 
-    # Sort image files by creation time using pathlib
+    # Sort image files by creation time
     image_files.sort(key=lambda x: x.stat().st_ctime)
 
-    # Create the path to the temporary files.txt in the current directory
+    if not image_files:
+        print("No .jpg images found in screenshots/ folder.")
+        return
+
     files_txt_path = current_directory / "files.txt"
 
-    # Create the path to the output video in the output folder
-    output_video_path = output_folder / "output.mp4"
+    # Path to the output video
+    output_video_path = current_directory / "output.mp4"
 
-    # Create the files.txt with correct file paths
+    # Write image paths and durations to files.txt
     with open(files_txt_path, "w") as file_list:
         for img_path in image_files:
             file_list.write(f"file '{str(img_path)}'\n")
             file_list.write("duration 3\n")
 
-    # Construct the ffmpeg command using h264_nvenc and specifying color range
+    # FFmpeg command
     ffmpeg_command = [
         'ffmpeg',
         '-f', 'concat',
         '-safe', '0',
         '-i', str(files_txt_path),
-        '-color_range', 'pc',  # Specify full color range for input (JPEG)
+        '-color_range', 'pc',
         '-vf', 'scale=1280:720',
         '-framerate', '30',
-        '-c:v', 'h264_nvenc',  # Use h264_nvenc encoder
-        '-preset', 'slow',      # Optional: Adjust encoding preset
+        '-c:v', 'libx264',
+        '-preset', 'slow',
         '-r', '30',
         '-pix_fmt', 'yuv420p',
         str(output_video_path)
     ]
 
-    # Run the ffmpeg command asynchronously and print output in real-time
+    print("tarting FFmpeg process...")
     try:
         process = await asyncio.create_subprocess_exec(
             *ffmpeg_command,
@@ -59,29 +64,27 @@ async def create_video():
             line = await process.stderr.readline()
             if not line:
                 break
-            print(f"FFmpeg stderr: {line.decode().strip()}")
+            print(f"FFmpeg: {line.decode().strip()}")
 
-        await process.wait()  # Wait for the process to finish
+        await process.wait()
 
         if process.returncode == 0:
-            print("Video created successfully using h264_nvenc!")
+            print(f"Video created successfully at: {output_video_path}")
         else:
-            print(f"Error running ffmpeg. Return code: {process.returncode}")
-            # stderr might already be printed, but let's capture it again just in case
+            print(f"FFmpeg failed with return code: {process.returncode}")
             stderr_output = await process.stderr.read()
-            if stderr_output:
-                print(f"FFmpeg stderr (final):\n{stderr_output.decode()}")
+            print(stderr_output.decode())
 
     except FileNotFoundError:
-        print("Error: ffmpeg command not found. Make sure it's in your PATH.")
+        print("ffmpeg not found. Make sure it’s installed and in your PATH.")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An unexpected error occurred: {e}")
 
-    # Remove the temporary files.txt
+    # Clean up files.txt
     if files_txt_path.exists():
         os.remove(files_txt_path)
 
-    print("done!!!!!!")
+    print("Done!")
 
 if __name__ == "__main__":
     asyncio.run(create_video())
