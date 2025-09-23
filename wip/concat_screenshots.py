@@ -83,7 +83,7 @@ async def create_video():
 
     # Remove the temporary files.txt
     if files_txt_path.exists():
-        os.remove(files_txt_path)
+        files_txt_path.unlink()
 
     print("done!!!!!!")
 
